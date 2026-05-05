@@ -251,12 +251,12 @@ export class HeroComponent {
       this.animateHero();
     });
   }
-  
+
   private animateHero(): void {
     const timeline = anime.timeline({
       easing: 'easeOutCubic'
     });
-    
+
     timeline
       .add({
         targets: '.hero-badge',
