@@ -1,6 +1,6 @@
 import { Component, signal, inject, PLATFORM_ID, afterNextRender } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import anime from 'animejs';
+import { animate } from 'animejs';
 
 @Component({
   selector: 'app-navbar',
@@ -239,24 +239,24 @@ import anime from 'animejs';
 })
 export class NavbarComponent {
   private platformId = inject(PLATFORM_ID);
-  
+
   isScrolled = signal(false);
   isMobileMenuOpen = signal(false);
-  
+
   navLinks = [
     { href: '#sobre-mi', label: 'Sobre Mi' },
     { href: '#servicios', label: 'Servicios' },
     { href: '#galeria', label: 'Galeria' },
     { href: '#testimonios', label: 'Testimonios' }
   ];
-  
+
   constructor() {
     afterNextRender(() => {
       this.initScrollListener();
       this.animateNavbar();
     });
   }
-  
+
   private initScrollListener(): void {
     if (isPlatformBrowser(this.platformId)) {
       window.addEventListener('scroll', () => {
@@ -264,21 +264,20 @@ export class NavbarComponent {
       });
     }
   }
-  
+
   private animateNavbar(): void {
-    anime({
-      targets: '.navbar',
+    animate('.navbar', {
       translateY: [-20, 0],
       opacity: [0, 1],
       duration: 800,
-      easing: 'easeOutCubic'
+      ease: 'easeOutCubic'
     });
   }
-  
+
   toggleMobileMenu(): void {
     this.isMobileMenuOpen.update(v => !v);
   }
-  
+
   closeMobileMenu(): void {
     this.isMobileMenuOpen.set(false);
   }

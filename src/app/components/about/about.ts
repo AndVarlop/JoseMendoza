@@ -1,6 +1,6 @@
 import { Component, ElementRef, inject, afterNextRender, PLATFORM_ID, viewChild } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import anime from 'animejs';
+import { createTimeline, stagger } from 'animejs';
 
 @Component({
   selector: 'app-about',
@@ -12,7 +12,7 @@ import anime from 'animejs';
           <div class="about-content">
             <span class="section-label">Sobre Mi</span>
             <h2 id="about-title" class="section-title">
-              Soy Jose Mendoza, especialista en cortinas modernas
+              Soy Jose Mendoza, Tecnico especialista en cortinas modernas
             </h2>
             <p class="about-text">
               Con mas de 10 anos de experiencia en el sector, me dedico a transformar 
@@ -215,16 +215,16 @@ export class AboutComponent {
   private platformId = inject(PLATFORM_ID);
   aboutSection = viewChild<ElementRef>('aboutSection');
   private hasAnimated = false;
-  
+
   constructor() {
     afterNextRender(() => {
       this.setupScrollAnimation();
     });
   }
-  
+
   private setupScrollAnimation(): void {
     if (!isPlatformBrowser(this.platformId)) return;
-    
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -236,46 +236,43 @@ export class AboutComponent {
       },
       { threshold: 0.2 }
     );
-    
+
     const section = this.aboutSection();
     if (section) {
       observer.observe(section.nativeElement);
     }
   }
-  
+
   private animateSection(): void {
-    const timeline = anime.timeline({
-      easing: 'easeOutCubic'
+    const timeline = createTimeline({
+      defaults: {
+        ease: 'easeOutCubic'
+      }
     });
-    
+
     timeline
-      .add({
-        targets: '.about .section-label',
+      .add('.about .section-label', {
         translateY: [20, 0],
         opacity: [0, 1],
         duration: 600
       })
-      .add({
-        targets: '.about .section-title',
+      .add('.about .section-title', {
         translateY: [30, 0],
         opacity: [0, 1],
         duration: 700
       }, '-=400')
-      .add({
-        targets: '.about-text',
+      .add('.about-text', {
         translateY: [20, 0],
         opacity: [0, 1],
         duration: 600,
-        delay: anime.stagger(150)
+        delay: stagger(150)
       }, '-=400')
-      .add({
-        targets: '.about-stats',
+      .add('.about-stats', {
         translateY: [20, 0],
         opacity: [0, 1],
         duration: 600
       }, '-=300')
-      .add({
-        targets: '.about-visual',
+      .add('.about-visual', {
         translateX: [50, 0],
         opacity: [0, 1],
         duration: 800

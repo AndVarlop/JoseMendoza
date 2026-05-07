@@ -1,6 +1,6 @@
 import { Component, ElementRef, inject, afterNextRender, PLATFORM_ID, viewChild } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import anime from 'animejs';
+import { createTimeline, stagger } from 'animejs';
 
 interface GalleryItem {
   id: number;
@@ -201,7 +201,7 @@ export class GalleryComponent {
   private platformId = inject(PLATFORM_ID);
   gallerySection = viewChild<ElementRef>('gallerySection');
   private hasAnimated = false;
-  
+
   galleryItems: GalleryItem[] = [
     { id: 1, image: '/images/gallery-1.jpg', title: 'Dormitorio Principal', category: 'Residencial' },
     { id: 2, image: '/images/gallery-2.jpg', title: 'Oficina Corporativa', category: 'Comercial' },
@@ -210,16 +210,16 @@ export class GalleryComponent {
     { id: 5, image: '/images/gallery-5.jpg', title: 'Cocina Contemporanea', category: 'Residencial' },
     { id: 6, image: '/images/gallery-6.jpg', title: 'Bano de Lujo', category: 'Residencial' }
   ];
-  
+
   constructor() {
     afterNextRender(() => {
       this.setupScrollAnimation();
     });
   }
-  
+
   private setupScrollAnimation(): void {
     if (!isPlatformBrowser(this.platformId)) return;
-    
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -231,43 +231,41 @@ export class GalleryComponent {
       },
       { threshold: 0.1 }
     );
-    
+
     const section = this.gallerySection();
     if (section) {
       observer.observe(section.nativeElement);
     }
   }
-  
+
   private animateSection(): void {
-    const timeline = anime.timeline({
-      easing: 'easeOutCubic'
+    const timeline = createTimeline({
+      defaults: {
+        ease: 'easeOutCubic'
+      }
     });
-    
+
     timeline
-      .add({
-        targets: '.gallery .section-label',
+      .add('.gallery .section-label', {
         translateY: [20, 0],
         opacity: [0, 1],
         duration: 600
       })
-      .add({
-        targets: '.gallery .section-title',
+      .add('.gallery .section-title', {
         translateY: [30, 0],
         opacity: [0, 1],
         duration: 700
       }, '-=400')
-      .add({
-        targets: '.gallery .section-subtitle',
+      .add('.gallery .section-subtitle', {
         translateY: [20, 0],
         opacity: [0, 1],
         duration: 600
       }, '-=400')
-      .add({
-        targets: '.gallery-item',
+      .add('.gallery-item', {
         scale: [0.9, 1],
         opacity: [0, 1],
         duration: 600,
-        delay: anime.stagger(100)
+        delay: stagger(100)
       }, '-=300');
   }
 }

@@ -1,6 +1,6 @@
 import { Component, ElementRef, inject, afterNextRender, PLATFORM_ID, viewChild, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import anime from 'animejs';
+import { createTimeline } from 'animejs';
 
 interface Testimonial {
   id: number;
@@ -286,9 +286,9 @@ export class TestimonialsComponent {
   testimonialsSection = viewChild<ElementRef>('testimonialsSection');
   private hasAnimated = false;
   private autoplayInterval: ReturnType<typeof setInterval> | null = null;
-  
+
   currentSlide = signal(0);
-  
+
   testimonials: Testimonial[] = [
     {
       id: 1,
@@ -319,17 +319,17 @@ export class TestimonialsComponent {
       rating: 5
     }
   ];
-  
+
   constructor() {
     afterNextRender(() => {
       this.setupScrollAnimation();
       this.startAutoplay();
     });
   }
-  
+
   private setupScrollAnimation(): void {
     if (!isPlatformBrowser(this.platformId)) return;
-    
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -341,39 +341,38 @@ export class TestimonialsComponent {
       },
       { threshold: 0.2 }
     );
-    
+
     const section = this.testimonialsSection();
     if (section) {
       observer.observe(section.nativeElement);
     }
   }
-  
+
   private animateSection(): void {
-    const timeline = anime.timeline({
-      easing: 'easeOutCubic'
+    const timeline = createTimeline({
+      defaults: {
+        ease: 'easeOutCubic'
+      }
     });
-    
+
     timeline
-      .add({
-        targets: '.testimonials .section-label',
+      .add('.testimonials .section-label', {
         translateY: [20, 0],
         opacity: [0, 1],
         duration: 600
       })
-      .add({
-        targets: '.testimonials .section-title',
+      .add('.testimonials .section-title', {
         translateY: [30, 0],
         opacity: [0, 1],
         duration: 700
       }, '-=400')
-      .add({
-        targets: '.testimonials-carousel',
+      .add('.testimonials-carousel', {
         translateY: [40, 0],
         opacity: [0, 1],
         duration: 800
       }, '-=400');
   }
-  
+
   private startAutoplay(): void {
     this.autoplayInterval = setInterval(() => {
       if (this.currentSlide() < this.testimonials.length - 1) {
@@ -383,19 +382,19 @@ export class TestimonialsComponent {
       }
     }, 5000);
   }
-  
+
   nextSlide(): void {
     if (this.currentSlide() < this.testimonials.length - 1) {
       this.currentSlide.update(v => v + 1);
     }
   }
-  
+
   prevSlide(): void {
     if (this.currentSlide() > 0) {
       this.currentSlide.update(v => v - 1);
     }
   }
-  
+
   goToSlide(index: number): void {
     this.currentSlide.set(index);
   }

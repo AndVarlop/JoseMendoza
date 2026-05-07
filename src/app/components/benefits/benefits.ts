@@ -1,6 +1,6 @@
 import { Component, ElementRef, inject, afterNextRender, PLATFORM_ID, viewChild } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import anime from 'animejs';
+import { createTimeline, stagger } from 'animejs';
 
 interface Benefit {
   id: string;
@@ -148,7 +148,7 @@ export class BenefitsComponent {
   private platformId = inject(PLATFORM_ID);
   benefitsSection = viewChild<ElementRef>('benefitsSection');
   private hasAnimated = false;
-  
+
   benefits: Benefit[] = [
     {
       id: 'installation',
@@ -183,16 +183,16 @@ export class BenefitsComponent {
       description: 'Tu satisfaccion es mi prioridad. Garantizo cada instalacion.'
     }
   ];
-  
+
   constructor() {
     afterNextRender(() => {
       this.setupScrollAnimation();
     });
   }
-  
+
   private setupScrollAnimation(): void {
     if (!isPlatformBrowser(this.platformId)) return;
-    
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -204,37 +204,36 @@ export class BenefitsComponent {
       },
       { threshold: 0.2 }
     );
-    
+
     const section = this.benefitsSection();
     if (section) {
       observer.observe(section.nativeElement);
     }
   }
-  
+
   private animateSection(): void {
-    const timeline = anime.timeline({
-      easing: 'easeOutCubic'
+    const timeline = createTimeline({
+      defaults: {
+        ease: 'easeOutCubic'
+      }
     });
-    
+
     timeline
-      .add({
-        targets: '.benefits .section-label',
+      .add('.benefits .section-label', {
         translateY: [20, 0],
         opacity: [0, 1],
         duration: 600
       })
-      .add({
-        targets: '.benefits .section-title',
+      .add('.benefits .section-title', {
         translateY: [30, 0],
         opacity: [0, 1],
         duration: 700
       }, '-=400')
-      .add({
-        targets: '.benefit-card',
+      .add('.benefit-card', {
         translateY: [40, 0],
         opacity: [0, 1],
         duration: 600,
-        delay: anime.stagger(100)
+        delay: stagger(100)
       }, '-=300');
   }
 }

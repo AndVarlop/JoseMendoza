@@ -1,5 +1,5 @@
 import { Component, afterNextRender } from '@angular/core';
-import anime from 'animejs';
+import { createTimeline } from 'animejs';
 
 @Component({
   selector: 'app-hero',
@@ -17,7 +17,7 @@ import anime from 'animejs';
       </div>
       
       <div class="hero-content">
-        <span class="hero-badge">Barranquilla, Colombia</span>
+        <span class="hero-badge">Cartagena, Colombia</span>
         <h1 class="hero-title">
           Transforma tus espacios con cortinas 
           <span class="highlight">modernas y elegantes</span>
@@ -28,7 +28,7 @@ import anime from 'animejs';
         </p>
         <div class="hero-actions">
           <a 
-            href="https://wa.me/573001234567?text=Hola%20Jose,%20me%20interesa%20cotizar%20cortinas"
+            href="https://wa.me/573008032231?text=Hola%20Jose,%20me%20interesa%20cotizar%20cortinas"
             class="btn-primary"
             target="_blank"
             rel="noopener noreferrer"
@@ -253,37 +253,34 @@ export class HeroComponent {
   }
 
   private animateHero(): void {
-    const timeline = anime.timeline({
-      easing: 'easeOutCubic'
+    const timeline = createTimeline({
+      defaults: {
+        ease: 'easeOutCubic'
+      }
     });
 
     timeline
-      .add({
-        targets: '.hero-badge',
+      .add('.hero-badge', {
         translateY: [30, 0],
         opacity: [0, 1],
         duration: 800
       })
-      .add({
-        targets: '.hero-title',
+      .add('.hero-title', {
         translateY: [40, 0],
         opacity: [0, 1],
         duration: 1000
       }, '-=500')
-      .add({
-        targets: '.hero-subtitle',
+      .add('.hero-subtitle', {
         translateY: [30, 0],
         opacity: [0, 1],
         duration: 800
       }, '-=600')
-      .add({
-        targets: '.hero-actions',
+      .add('.hero-actions', {
         translateY: [30, 0],
         opacity: [0, 1],
         duration: 800
       }, '-=500')
-      .add({
-        targets: '.scroll-indicator',
+      .add('.scroll-indicator', {
         opacity: [0, 1],
         duration: 600
       }, '-=300');

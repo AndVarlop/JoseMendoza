@@ -1,12 +1,12 @@
 import { Component, afterNextRender } from '@angular/core';
-import anime from 'animejs';
+import { animate } from 'animejs';
 
 @Component({
   selector: 'app-whatsapp-button',
   standalone: true,
   template: `
     <a 
-      href="https://wa.me/573001234567?text=Hola%20Jose,%20me%20interesa%20cotizar%20cortinas"
+      href="https://wa.me/573008032231?text=Hola%20Jose,%20me%20interesa%20cotizar%20cortinas"
       class="whatsapp-float"
       target="_blank"
       rel="noopener noreferrer"
@@ -102,20 +102,18 @@ export class WhatsappButtonComponent {
       this.animateButton();
     });
   }
-  
+
   private animateButton(): void {
-    anime({
-      targets: '.whatsapp-float',
+    animate('.whatsapp-float', {
       scale: [0, 1],
       opacity: [0, 1],
       duration: 600,
       delay: 1500,
-      easing: 'easeOutBack'
+      ease: 'easeOutBack'
     });
-    
+
     // Pulse animation
-    anime({
-      targets: '.whatsapp-float',
+    animate('.whatsapp-float', {
       boxShadow: [
         '0 4px 20px rgba(37, 211, 102, 0.4)',
         '0 4px 30px rgba(37, 211, 102, 0.6)',
@@ -124,7 +122,7 @@ export class WhatsappButtonComponent {
       duration: 2000,
       delay: 2500,
       loop: true,
-      easing: 'easeInOutSine'
+      ease: 'easeInOutSine'
     });
   }
 }
