@@ -1,5 +1,5 @@
-import { Component, ElementRef, inject, afterNextRender, PLATFORM_ID, viewChild } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Component } from '@angular/core';
+import { ScrollAnimateDirective } from '../../directives/scroll-animate.directive';
 import { createTimeline, stagger } from 'animejs';
 
 interface Benefit {
@@ -12,8 +12,9 @@ interface Benefit {
 @Component({
   selector: 'app-benefits',
   standalone: true,
+  imports: [ScrollAnimateDirective],
   template: `
-    <section id="beneficios" class="benefits section" role="region" aria-labelledby="benefits-title" #benefitsSection>
+    <section id="beneficios" class="benefits section" role="region" aria-labelledby="benefits-title" appScrollAnimate scrollThreshold="0.2" (visible)="animateSection()">
       <div class="container">
         <div class="section-header">
           <span class="section-label">Por que elegirnos</span>
@@ -145,9 +146,6 @@ interface Benefit {
   `]
 })
 export class BenefitsComponent {
-  private platformId = inject(PLATFORM_ID);
-  benefitsSection = viewChild<ElementRef>('benefitsSection');
-  private hasAnimated = false;
 
   benefits: Benefit[] = [
     {
@@ -184,34 +182,7 @@ export class BenefitsComponent {
     }
   ];
 
-  constructor() {
-    afterNextRender(() => {
-      this.setupScrollAnimation();
-    });
-  }
-
-  private setupScrollAnimation(): void {
-    if (!isPlatformBrowser(this.platformId)) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !this.hasAnimated) {
-            this.hasAnimated = true;
-            this.animateSection();
-          }
-        });
-      },
-      { threshold: 0.2 }
-    );
-
-    const section = this.benefitsSection();
-    if (section) {
-      observer.observe(section.nativeElement);
-    }
-  }
-
-  private animateSection(): void {
+  animateSection(): void {
     const timeline = createTimeline({
       defaults: {
         ease: 'easeOutCubic'

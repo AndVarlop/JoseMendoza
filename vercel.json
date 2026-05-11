@@ -1,0 +1,6 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist/JoseMendoza/browser",
+  "framework": "angular",
+  "devCommand": "npm start"
+}

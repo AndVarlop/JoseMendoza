@@ -91,7 +91,9 @@ import { animate } from 'animejs';
       }
       
       .tooltip {
-        display: none;
+        font-size: 0.75rem;
+        padding: 0.375rem 0.75rem;
+        right: 60px;
       }
     }
   `]
