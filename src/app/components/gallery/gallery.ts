@@ -1,5 +1,5 @@
-import { Component, ElementRef, inject, afterNextRender, PLATFORM_ID, viewChild } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Component } from '@angular/core';
+import { ScrollAnimateDirective } from '../../directives/scroll-animate.directive';
 import { createTimeline, stagger } from 'animejs';
 
 interface GalleryItem {
@@ -12,8 +12,9 @@ interface GalleryItem {
 @Component({
   selector: 'app-gallery',
   standalone: true,
+  imports: [ScrollAnimateDirective],
   template: `
-    <section id="galeria" class="gallery section" role="region" aria-labelledby="gallery-title" #gallerySection>
+    <section id="galeria" class="gallery section" role="region" aria-labelledby="gallery-title" appScrollAnimate scrollThreshold="0.1" (visible)="animateSection()">
       <div class="container">
         <div class="section-header">
           <span class="section-label">Galeria de Proyectos</span>
@@ -21,7 +22,7 @@ interface GalleryItem {
             Nuestros trabajos recientes
           </h2>
           <p class="section-subtitle">
-            Descubre como hemos transformado espacios en toda Barranquilla 
+            Descubre como hemos transformado espacios en Cartagena y sus alrededores
             con nuestras instalaciones de cortinas.
           </p>
         </div>
@@ -198,9 +199,6 @@ interface GalleryItem {
   `]
 })
 export class GalleryComponent {
-  private platformId = inject(PLATFORM_ID);
-  gallerySection = viewChild<ElementRef>('gallerySection');
-  private hasAnimated = false;
 
   galleryItems: GalleryItem[] = [
     { id: 1, image: '/images/gallery-1.jpg', title: 'Dormitorio Principal', category: 'Residencial' },
@@ -211,34 +209,7 @@ export class GalleryComponent {
     { id: 6, image: '/images/gallery-6.jpg', title: 'Bano de Lujo', category: 'Residencial' }
   ];
 
-  constructor() {
-    afterNextRender(() => {
-      this.setupScrollAnimation();
-    });
-  }
-
-  private setupScrollAnimation(): void {
-    if (!isPlatformBrowser(this.platformId)) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !this.hasAnimated) {
-            this.hasAnimated = true;
-            this.animateSection();
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    const section = this.gallerySection();
-    if (section) {
-      observer.observe(section.nativeElement);
-    }
-  }
-
-  private animateSection(): void {
+  animateSection(): void {
     const timeline = createTimeline({
       defaults: {
         ease: 'easeOutCubic'

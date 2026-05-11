@@ -1,5 +1,5 @@
-import { Component, ElementRef, inject, afterNextRender, PLATFORM_ID, viewChild, signal } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Component, DestroyRef, inject, afterNextRender, signal } from '@angular/core';
+import { ScrollAnimateDirective } from '../../directives/scroll-animate.directive';
 import { createTimeline } from 'animejs';
 
 interface Testimonial {
@@ -13,8 +13,9 @@ interface Testimonial {
 @Component({
   selector: 'app-testimonials',
   standalone: true,
+  imports: [ScrollAnimateDirective],
   template: `
-    <section id="testimonios" class="testimonials section" role="region" aria-labelledby="testimonials-title" #testimonialsSection>
+    <section id="testimonios" class="testimonials section" role="region" aria-labelledby="testimonials-title" appScrollAnimate scrollThreshold="0.2" (visible)="animateSection()">
       <div class="container">
         <div class="section-header">
           <span class="section-label">Testimonios</span>
@@ -24,7 +25,7 @@ interface Testimonial {
         </div>
         
         <div class="testimonials-carousel">
-          <div class="carousel-track" [style.transform]="'translateX(-' + currentSlide() * 100 + '%)'">
+          <div class="carousel-track" [style.transform]="'translateX(-' + currentSlide() * 100 + '%)'" aria-live="polite">
             @for (testimonial of testimonials; track testimonial.id) {
               <div class="testimonial-card">
                 <div class="stars" aria-label="Calificacion: {{ testimonial.rating }} de 5 estrellas">
@@ -282,9 +283,7 @@ interface Testimonial {
   `]
 })
 export class TestimonialsComponent {
-  private platformId = inject(PLATFORM_ID);
-  testimonialsSection = viewChild<ElementRef>('testimonialsSection');
-  private hasAnimated = false;
+  private destroyRef = inject(DestroyRef);
   private autoplayInterval: ReturnType<typeof setInterval> | null = null;
 
   currentSlide = signal(0);
@@ -293,28 +292,28 @@ export class TestimonialsComponent {
     {
       id: 1,
       name: 'Maria Rodriguez',
-      location: 'Barranquilla, Norte',
+      location: 'Cartagena, Bocagrande',
       text: 'Jose transformo completamente mi sala. Las cortinas blackout son perfectas y la instalacion fue impecable. Muy profesional y puntual.',
       rating: 5
     },
     {
       id: 2,
       name: 'Carlos Mejia',
-      location: 'Barranquilla, El Prado',
+      location: 'Cartagena, El Prado',
       text: 'Excelente trabajo en mi oficina. El panel japones quedo espectacular y le da un toque muy moderno al espacio. Totalmente recomendado.',
       rating: 5
     },
     {
       id: 3,
       name: 'Ana Sofia Herrera',
-      location: 'Barranquilla, Villa Country',
+      location: 'Cartagena, Manga',
       text: 'La asesoria de Jose fue clave para elegir las cortinas perfectas para mi apartamento. Servicio de primera y precios justos.',
       rating: 5
     },
     {
       id: 4,
       name: 'Roberto Castillo',
-      location: 'Barranquilla, Riomar',
+      location: 'Cartagena, Castillogrande',
       text: 'Ya es la segunda vez que trabajo con Jose. Siempre cumple con los tiempos y la calidad es excelente. Lo recomiendo totalmente.',
       rating: 5
     }
@@ -322,33 +321,16 @@ export class TestimonialsComponent {
 
   constructor() {
     afterNextRender(() => {
-      this.setupScrollAnimation();
       this.startAutoplay();
+    });
+    this.destroyRef.onDestroy(() => {
+      if (this.autoplayInterval) {
+        clearInterval(this.autoplayInterval);
+      }
     });
   }
 
-  private setupScrollAnimation(): void {
-    if (!isPlatformBrowser(this.platformId)) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !this.hasAnimated) {
-            this.hasAnimated = true;
-            this.animateSection();
-          }
-        });
-      },
-      { threshold: 0.2 }
-    );
-
-    const section = this.testimonialsSection();
-    if (section) {
-      observer.observe(section.nativeElement);
-    }
-  }
-
-  private animateSection(): void {
+  animateSection(): void {
     const timeline = createTimeline({
       defaults: {
         ease: 'easeOutCubic'
@@ -383,19 +365,29 @@ export class TestimonialsComponent {
     }, 5000);
   }
 
+  private resetAutoplay(): void {
+    if (this.autoplayInterval) {
+      clearInterval(this.autoplayInterval);
+    }
+    this.startAutoplay();
+  }
+
   nextSlide(): void {
     if (this.currentSlide() < this.testimonials.length - 1) {
       this.currentSlide.update(v => v + 1);
     }
+    this.resetAutoplay();
   }
 
   prevSlide(): void {
     if (this.currentSlide() > 0) {
       this.currentSlide.update(v => v - 1);
     }
+    this.resetAutoplay();
   }
 
   goToSlide(index: number): void {
     this.currentSlide.set(index);
+    this.resetAutoplay();
   }
 }

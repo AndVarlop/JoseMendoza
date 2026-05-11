@@ -50,7 +50,7 @@ import { animate } from 'animejs';
           }
           <li role="none" class="nav-cta-wrapper">
             <a 
-              href="https://wa.me/573001234567?text=Hola%20Jose,%20me%20interesa%20cotizar%20cortinas"
+              href="https://wa.me/573008032231?text=Hola%20Jose,%20me%20interesa%20cotizar%20cortinas"
               class="nav-cta"
               target="_blank"
               rel="noopener noreferrer"
@@ -261,7 +261,7 @@ export class NavbarComponent {
     if (isPlatformBrowser(this.platformId)) {
       window.addEventListener('scroll', () => {
         this.isScrolled.set(window.scrollY > 50);
-      });
+      }, { passive: true });
     }
   }
 
