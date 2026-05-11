@@ -9,6 +9,7 @@ import { Component } from '@angular/core';
         <div class="footer-grid">
           <div class="footer-brand">
             <a href="#hero" class="logo" aria-label="Jose Mendoza - Inicio">
+              <img src="/logo.svg" alt="" class="logo-img" width="36" height="36" aria-hidden="true">
               <span class="logo-text">Jose Mendoza</span>
             </a>
             <p class="brand-tagline">
@@ -118,6 +119,17 @@ import { Component } from '@angular/core';
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
     
+    .footer .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+    }
+
+    .footer .logo-img {
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
     .logo-text {
       font-family: var(--font-display);
       font-size: 1.5rem;

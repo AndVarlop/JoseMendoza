@@ -13,6 +13,7 @@ import { animate } from 'animejs';
     >
       <nav class="navbar-container" aria-label="Main navigation">
         <a href="#hero" class="logo" aria-label="Jose Mendoza - Inicio">
+          <img src="/logo.svg" alt="" class="logo-img" width="36" height="36" aria-hidden="true">
           <span class="logo-text">Jose Mendoza</span>
         </a>
         
@@ -93,9 +94,14 @@ import { animate } from 'animejs';
     .logo {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.625rem;
     }
     
+    .logo-img {
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
     .logo-text {
       font-family: var(--font-display);
       font-size: 1.5rem;
