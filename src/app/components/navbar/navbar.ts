@@ -13,6 +13,7 @@ import { animate } from 'animejs';
     >
       <nav class="navbar-container" aria-label="Main navigation">
         <a href="#hero" class="logo" aria-label="Jose Mendoza - Inicio">
+          <img src="/logo.svg" alt="" class="logo-img" width="36" height="36" aria-hidden="true">
           <span class="logo-text">Jose Mendoza</span>
         </a>
         
@@ -50,7 +51,7 @@ import { animate } from 'animejs';
           }
           <li role="none" class="nav-cta-wrapper">
             <a 
-              href="https://wa.me/573001234567?text=Hola%20Jose,%20me%20interesa%20cotizar%20cortinas"
+              href="https://wa.me/573008032231?text=Hola%20Jose,%20me%20interesa%20cotizar%20cortinas"
               class="nav-cta"
               target="_blank"
               rel="noopener noreferrer"
@@ -93,9 +94,14 @@ import { animate } from 'animejs';
     .logo {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.625rem;
     }
     
+    .logo-img {
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
     .logo-text {
       font-family: var(--font-display);
       font-size: 1.5rem;
@@ -261,7 +267,7 @@ export class NavbarComponent {
     if (isPlatformBrowser(this.platformId)) {
       window.addEventListener('scroll', () => {
         this.isScrolled.set(window.scrollY > 50);
-      });
+      }, { passive: true });
     }
   }
 

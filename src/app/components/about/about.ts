@@ -1,12 +1,13 @@
-import { Component, ElementRef, inject, afterNextRender, PLATFORM_ID, viewChild } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Component } from '@angular/core';
+import { ScrollAnimateDirective } from '../../directives/scroll-animate.directive';
 import { createTimeline, stagger } from 'animejs';
 
 @Component({
   selector: 'app-about',
   standalone: true,
+  imports: [ScrollAnimateDirective],
   template: `
-    <section id="sobre-mi" class="about section" role="region" aria-labelledby="about-title" #aboutSection>
+    <section id="sobre-mi" class="about section" role="region" aria-labelledby="about-title" appScrollAnimate scrollThreshold="0.2" (visible)="animateSection()">
       <div class="container">
         <div class="about-grid">
           <div class="about-content">
@@ -212,38 +213,8 @@ import { createTimeline, stagger } from 'animejs';
   `]
 })
 export class AboutComponent {
-  private platformId = inject(PLATFORM_ID);
-  aboutSection = viewChild<ElementRef>('aboutSection');
-  private hasAnimated = false;
 
-  constructor() {
-    afterNextRender(() => {
-      this.setupScrollAnimation();
-    });
-  }
-
-  private setupScrollAnimation(): void {
-    if (!isPlatformBrowser(this.platformId)) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !this.hasAnimated) {
-            this.hasAnimated = true;
-            this.animateSection();
-          }
-        });
-      },
-      { threshold: 0.2 }
-    );
-
-    const section = this.aboutSection();
-    if (section) {
-      observer.observe(section.nativeElement);
-    }
-  }
-
-  private animateSection(): void {
+  animateSection(): void {
     const timeline = createTimeline({
       defaults: {
         ease: 'easeOutCubic'

@@ -1,12 +1,13 @@
-import { Component, ElementRef, inject, afterNextRender, PLATFORM_ID, viewChild } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Component } from '@angular/core';
+import { ScrollAnimateDirective } from '../../directives/scroll-animate.directive';
 import { createTimeline } from 'animejs';
 
 @Component({
   selector: 'app-cta',
   standalone: true,
+  imports: [ScrollAnimateDirective],
   template: `
-    <section class="cta section" role="region" aria-labelledby="cta-title" #ctaSection>
+    <section class="cta section" role="region" aria-labelledby="cta-title" appScrollAnimate scrollThreshold="0.3" (visible)="animateSection()">
       <div class="cta-bg"></div>
       <div class="container">
         <div class="cta-content">
@@ -133,38 +134,8 @@ import { createTimeline } from 'animejs';
   `]
 })
 export class CtaComponent {
-  private platformId = inject(PLATFORM_ID);
-  ctaSection = viewChild<ElementRef>('ctaSection');
-  private hasAnimated = false;
 
-  constructor() {
-    afterNextRender(() => {
-      this.setupScrollAnimation();
-    });
-  }
-
-  private setupScrollAnimation(): void {
-    if (!isPlatformBrowser(this.platformId)) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !this.hasAnimated) {
-            this.hasAnimated = true;
-            this.animateSection();
-          }
-        });
-      },
-      { threshold: 0.3 }
-    );
-
-    const section = this.ctaSection();
-    if (section) {
-      observer.observe(section.nativeElement);
-    }
-  }
-
-  private animateSection(): void {
+  animateSection(): void {
     const timeline = createTimeline({
       defaults: {
         ease: 'easeOutCubic'
