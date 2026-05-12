@@ -1,30 +1,30 @@
 import { Component } from '@angular/core';
 import { ScrollAnimateDirective } from '../../directives/scroll-animate.directive';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 import { createTimeline, stagger } from 'animejs';
 
 interface Service {
   id: string;
-  title: string;
-  description: string;
+  titleKey: string;
+  descKey: string;
   image: string;
-  features: string[];
+  featureKeys: string[];
 }
 
 @Component({
   selector: 'app-services',
   standalone: true,
-  imports: [ScrollAnimateDirective],
+  imports: [ScrollAnimateDirective, TranslatePipe],
   template: `
     <section id="servicios" class="services section" role="region" aria-labelledby="services-title" appScrollAnimate scrollThreshold="0.15" (visible)="animateSection()">
       <div class="container">
         <div class="section-header">
-          <span class="section-label">Nuestros Servicios</span>
+          <span class="section-label">{{ 'services.label' | translate }}</span>
           <h2 id="services-title" class="section-title">
-            Soluciones de cortinas para cada espacio
+            {{ 'services.title' | translate }}
           </h2>
           <p class="section-subtitle">
-            Ofrecemos una amplia variedad de estilos y materiales para satisfacer 
-            las necesidades de cualquier ambiente.
+            {{ 'services.subtitle' | translate }}
           </p>
         </div>
         
@@ -34,21 +34,21 @@ interface Service {
               <div class="card-image">
                 <img 
                   [src]="service.image" 
-                  [alt]="'Cortinas ' + service.title"
+                  [alt]="('services.alt' | translate) + ' ' + (service.titleKey | translate)"
                   loading="lazy"
                 />
                 <div class="image-overlay"></div>
               </div>
               <div class="card-body">
-                <h3 class="card-title">{{ service.title }}</h3>
-                <p class="card-description">{{ service.description }}</p>
+                <h3 class="card-title">{{ service.titleKey | translate }}</h3>
+                <p class="card-description">{{ service.descKey | translate }}</p>
                 <ul class="card-features">
-                  @for (feature of service.features; track feature) {
+                  @for (featureKey of service.featureKeys; track featureKey) {
                     <li>
                       <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                         <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                       </svg>
-                      {{ feature }}
+                      {{ featureKey | translate }}
                     </li>
                   }
                 </ul>
@@ -218,33 +218,34 @@ export class ServicesComponent {
   services: Service[] = [
     {
       id: 'blackout',
-      title: 'Cortinas Blackout',
-      description: 'Bloqueo total de luz para un descanso perfecto y privacidad absoluta.',
+      titleKey: 'services.blackout.title',
+      descKey: 'services.blackout.desc',
       image: '/images/service-blackout.jpg',
-      features: ['100% oscuridad', 'Aislante termico', 'Facil mantenimiento']
+      featureKeys: ['services.blackout.f1', 'services.blackout.f2', 'services.blackout.f3']
     },
     {
       id: 'sheer',
-      title: 'Cortinas Sheer',
-      description: 'Elegancia y suavidad que permite el paso de luz natural filtrada.',
+      titleKey: 'services.sheer.title',
+      descKey: 'services.sheer.desc',
       image: '/images/service-sheer.jpg',
-      features: ['Luz natural', 'Privacidad parcial', 'Ambiente acogedor']
+      featureKeys: ['services.sheer.f1', 'services.sheer.f2', 'services.sheer.f3']
     },
     {
       id: 'roller',
-      title: 'Cortinas Enrollables',
-      description: 'Diseno moderno y funcional ideal para espacios contemporaneos.',
+      titleKey: 'services.roller.title',
+      descKey: 'services.roller.desc',
       image: '/images/service-roller.jpg',
-      features: ['Estilo minimalista', 'Ahorro de espacio', 'Varios colores']
+      featureKeys: ['services.roller.f1', 'services.roller.f2', 'services.roller.f3']
     },
     {
       id: 'panel',
-      title: 'Panel Japones',
-      description: 'Sofisticacion oriental perfecta para grandes ventanales y divisiones.',
+      titleKey: 'services.panel.title',
+      descKey: 'services.panel.desc',
       image: '/images/service-panel.jpg',
-      features: ['Grandes ventanales', 'Division de espacios', 'Diseno elegante']
+      featureKeys: ['services.panel.f1', 'services.panel.f2', 'services.panel.f3']
     }
   ];
+
 
   animateSection(): void {
     const timeline = createTimeline({
