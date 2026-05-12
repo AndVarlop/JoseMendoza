@@ -1,43 +1,39 @@
 import { Component } from '@angular/core';
 import { ScrollAnimateDirective } from '../../directives/scroll-animate.directive';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 import { createTimeline, stagger } from 'animejs';
 
 @Component({
   selector: 'app-about',
   standalone: true,
-  imports: [ScrollAnimateDirective],
+  imports: [ScrollAnimateDirective, TranslatePipe],
   template: `
     <section id="sobre-mi" class="about section" role="region" aria-labelledby="about-title" appScrollAnimate scrollThreshold="0.2" (visible)="animateSection()">
       <div class="container">
         <div class="about-grid">
           <div class="about-content">
-            <span class="section-label">Sobre Mi</span>
+            <span class="section-label">{{ 'about.label' | translate }}</span>
             <h2 id="about-title" class="section-title">
-              Soy Jose Mendoza, Tecnico especialista en cortinas modernas
+              {{ 'about.title' | translate }}
             </h2>
             <p class="about-text">
-              Con mas de 10 anos de experiencia en el sector, me dedico a transformar 
-              espacios a traves de soluciones de cortinas que combinan funcionalidad, 
-              estetica y calidad premium.
+              {{ 'about.text1' | translate }}
             </p>
             <p class="about-text">
-              Mi enfoque se centra en entender las necesidades de cada cliente, 
-              ofreciendo asesoria personalizada desde la seleccion del material 
-              hasta la instalacion final. Cada proyecto es una oportunidad para 
-              crear ambientes unicos que reflejen tu estilo.
+              {{ 'about.text2' | translate }}
             </p>
             <div class="about-stats">
               <div class="stat">
                 <span class="stat-number">500+</span>
-                <span class="stat-label">Proyectos Completados</span>
+                <span class="stat-label">{{ 'about.projects' | translate }}</span>
               </div>
               <div class="stat">
                 <span class="stat-number">10+</span>
-                <span class="stat-label">Anos de Experiencia</span>
+                <span class="stat-label">{{ 'about.experience' | translate }}</span>
               </div>
               <div class="stat">
                 <span class="stat-number">100%</span>
-                <span class="stat-label">Clientes Satisfechos</span>
+                <span class="stat-label">{{ 'about.satisfaction' | translate }}</span>
               </div>
             </div>
           </div>
@@ -50,8 +46,8 @@ import { createTimeline, stagger } from 'animejs';
                   <path d="M2 17l10 5 10-5"/>
                   <path d="M2 12l10 5 10-5"/>
                 </svg>
-                <h3>Atencion Personalizada</h3>
-                <p>Cada cliente recibe un servicio exclusivo adaptado a sus necesidades y presupuesto.</p>
+                <h3>{{ 'about.cardTitle' | translate }}</h3>
+                <p>{{ 'about.cardDesc' | translate }}</p>
               </div>
             </div>
           </div>

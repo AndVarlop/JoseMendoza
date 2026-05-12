@@ -1,25 +1,26 @@
 import { Component } from '@angular/core';
 import { ScrollAnimateDirective } from '../../directives/scroll-animate.directive';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 import { createTimeline, stagger } from 'animejs';
 
 interface Benefit {
   id: string;
   icon: string;
-  title: string;
-  description: string;
+  titleKey: string;
+  descKey: string;
 }
 
 @Component({
   selector: 'app-benefits',
   standalone: true,
-  imports: [ScrollAnimateDirective],
+  imports: [ScrollAnimateDirective, TranslatePipe],
   template: `
     <section id="beneficios" class="benefits section" role="region" aria-labelledby="benefits-title" appScrollAnimate scrollThreshold="0.2" (visible)="animateSection()">
       <div class="container">
         <div class="section-header">
-          <span class="section-label">Por que elegirnos</span>
+          <span class="section-label">{{ 'benefits.label' | translate }}</span>
           <h2 id="benefits-title" class="section-title">
-            Beneficios de trabajar conmigo
+            {{ 'benefits.title' | translate }}
           </h2>
         </div>
         
@@ -27,8 +28,8 @@ interface Benefit {
           @for (benefit of benefits; track benefit.id) {
             <div class="benefit-card">
               <div class="benefit-icon" [innerHTML]="benefit.icon"></div>
-              <h3 class="benefit-title">{{ benefit.title }}</h3>
-              <p class="benefit-description">{{ benefit.description }}</p>
+              <h3 class="benefit-title">{{ benefit.titleKey | translate }}</h3>
+              <p class="benefit-description">{{ benefit.descKey | translate }}</p>
             </div>
           }
         </div>
@@ -153,32 +154,32 @@ export class BenefitsComponent {
       icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
       </svg>`,
-      title: 'Instalacion Profesional',
-      description: 'Montaje experto con herramientas especializadas y acabados perfectos.'
+      titleKey: 'benefits.installation',
+      descKey: 'benefits.installationDesc'
     },
     {
       id: 'advice',
       icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
       </svg>`,
-      title: 'Asesoria Personalizada',
-      description: 'Te guio en cada paso para encontrar la solucion perfecta para tu espacio.'
+      titleKey: 'benefits.advice',
+      descKey: 'benefits.adviceDesc'
     },
     {
       id: 'quality',
       icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
       </svg>`,
-      title: 'Materiales de Alta Calidad',
-      description: 'Solo trabajo con las mejores telas y mecanismos del mercado.'
+      titleKey: 'benefits.quality',
+      descKey: 'benefits.qualityDesc'
     },
     {
       id: 'warranty',
       icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
       </svg>`,
-      title: 'Garantia de Satisfaccion',
-      description: 'Tu satisfaccion es mi prioridad. Garantizo cada instalacion.'
+      titleKey: 'benefits.warranty',
+      descKey: 'benefits.warrantyDesc'
     }
   ];
 

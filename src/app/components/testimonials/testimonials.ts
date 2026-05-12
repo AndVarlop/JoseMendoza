@@ -1,5 +1,6 @@
 import { Component, DestroyRef, inject, afterNextRender, signal } from '@angular/core';
 import { ScrollAnimateDirective } from '../../directives/scroll-animate.directive';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 import { createTimeline } from 'animejs';
 
 interface Testimonial {
@@ -13,14 +14,14 @@ interface Testimonial {
 @Component({
   selector: 'app-testimonials',
   standalone: true,
-  imports: [ScrollAnimateDirective],
+  imports: [ScrollAnimateDirective, TranslatePipe],
   template: `
     <section id="testimonios" class="testimonials section" role="region" aria-labelledby="testimonials-title" appScrollAnimate scrollThreshold="0.2" (visible)="animateSection()">
       <div class="container">
         <div class="section-header">
-          <span class="section-label">Testimonios</span>
+          <span class="section-label">{{ 'testimonials.label' | translate }}</span>
           <h2 id="testimonials-title" class="section-title">
-            Lo que dicen nuestros clientes
+            {{ 'testimonials.title' | translate }}
           </h2>
         </div>
         
@@ -61,7 +62,7 @@ interface Testimonial {
               class="carousel-btn prev"
               (click)="prevSlide()"
               [disabled]="currentSlide() === 0"
-              aria-label="Testimonio anterior"
+              [attr.aria-label]="'testimonials.prev' | translate"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <path d="M15 19l-7-7 7-7"/>
@@ -81,7 +82,7 @@ interface Testimonial {
               class="carousel-btn next"
               (click)="nextSlide()"
               [disabled]="currentSlide() === testimonials.length - 1"
-              aria-label="Siguiente testimonio"
+              [attr.aria-label]="'testimonials.next' | translate"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <path d="M9 5l7 7-7 7"/>

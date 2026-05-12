@@ -1,10 +1,14 @@
 import { Component, signal, inject, PLATFORM_ID, afterNextRender } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { animate } from 'animejs';
+import { TranslatePipe } from '../../pipes/translate.pipe';
+import { ThemeService } from '../../services/theme.service';
+import { TranslationService } from '../../services/translation.service';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
+  imports: [TranslatePipe],
   template: `
     <header 
       class="navbar" 
@@ -37,6 +41,31 @@ import { animate } from 'animejs';
           id="mobile-menu"
           role="menubar"
         >
+          <li role="none" class="nav-controls-item">
+            <button 
+              class="theme-toggle"
+              (click)="theme.toggle()"
+              [attr.aria-label]="(theme.isDark() ? 'nav.lightMode' : 'nav.darkMode') | translate"
+            >
+              @if (theme.isDark()) {
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <circle cx="12" cy="12" r="5"/>
+                  <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                </svg>
+              } @else {
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+              }
+            </button>
+            <button 
+              class="lang-toggle"
+              (click)="ts.toggle()"
+              aria-label="Toggle language"
+            >
+              {{ 'nav.lang' | translate }}
+            </button>
+          </li>
           @for (link of navLinks; track link.href) {
             <li role="none">
               <a 
@@ -45,7 +74,7 @@ import { animate } from 'animejs';
                 role="menuitem"
                 (click)="closeMobileMenu()"
               >
-                {{ link.label }}
+                {{ link.key | translate }}
               </a>
             </li>
           }
@@ -57,7 +86,7 @@ import { animate } from 'animejs';
               rel="noopener noreferrer"
               role="menuitem"
             >
-              Cotizar
+              {{ 'nav.quote' | translate }}
             </a>
           </li>
         </ul>
@@ -113,7 +142,7 @@ import { animate } from 'animejs';
     .navbar:not(.scrolled) .logo-text {
       color: var(--color-white);
     }
-    
+
     .nav-links {
       display: flex;
       align-items: center;
@@ -150,7 +179,62 @@ import { animate } from 'animejs';
     .navbar:not(.scrolled) .nav-link::after {
       background: var(--color-white);
     }
-    
+
+    .nav-controls-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-right: 0.5rem;
+      list-style: none;
+    }
+
+    .nav-controls-item .theme-toggle {
+      background: none;
+      border: none;
+      padding: 0.375rem;
+      cursor: pointer;
+      color: var(--color-black);
+      transition: color var(--transition-fast);
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar:not(.scrolled) .nav-controls-item .theme-toggle {
+      color: var(--color-white);
+    }
+
+    .nav-controls-item .theme-toggle:hover {
+      color: var(--color-accent);
+    }
+
+    .nav-controls-item .theme-toggle svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .nav-controls-item .lang-toggle {
+      background: none;
+      border: 1px solid var(--color-gray-medium);
+      border-radius: var(--radius-sm);
+      padding: 0.25rem 0.5rem;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--color-black);
+      transition: all var(--transition-fast);
+      line-height: 1;
+    }
+
+    .navbar:not(.scrolled) .nav-controls-item .lang-toggle {
+      color: var(--color-white);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .nav-controls-item .lang-toggle:hover {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+    }
+
     .nav-cta {
       padding: 0.625rem 1.5rem;
       background: var(--color-accent);
@@ -228,13 +312,31 @@ import { animate } from 'animejs';
         right: 0;
       }
       
-      .nav-link {
+      .navbar .nav-link,
+      .navbar:not(.scrolled) .nav-link {
         color: var(--color-black);
         font-size: 1.125rem;
       }
       
       .nav-link::after {
         background: var(--color-accent);
+      }
+
+      .nav-controls-item {
+        justify-content: center;
+        margin-right: 0;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--color-gray-medium);
+      }
+
+      .nav-controls-item .theme-toggle {
+        color: var(--color-black);
+      }
+
+      .nav-controls-item .lang-toggle {
+        color: var(--color-black);
+        border-color: var(--color-gray-medium);
       }
       
       .nav-cta-wrapper {
@@ -246,14 +348,17 @@ import { animate } from 'animejs';
 export class NavbarComponent {
   private platformId = inject(PLATFORM_ID);
 
+  theme = inject(ThemeService);
+  ts = inject(TranslationService);
+
   isScrolled = signal(false);
   isMobileMenuOpen = signal(false);
 
   navLinks = [
-    { href: '#sobre-mi', label: 'Sobre Mi' },
-    { href: '#servicios', label: 'Servicios' },
-    { href: '#galeria', label: 'Galeria' },
-    { href: '#testimonios', label: 'Testimonios' }
+    { href: '#sobre-mi', key: 'nav.about' },
+    { href: '#servicios', key: 'nav.services' },
+    { href: '#galeria', key: 'nav.gallery' },
+    { href: '#testimonios', key: 'nav.testimonials' }
   ];
 
   constructor() {

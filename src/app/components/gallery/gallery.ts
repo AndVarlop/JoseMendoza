@@ -1,29 +1,28 @@
 import { Component } from '@angular/core';
 import { ScrollAnimateDirective } from '../../directives/scroll-animate.directive';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 import { createTimeline, stagger } from 'animejs';
 
 interface GalleryItem {
   id: number;
   image: string;
-  title: string;
-  category: string;
+  catKey: string;
 }
 
 @Component({
   selector: 'app-gallery',
   standalone: true,
-  imports: [ScrollAnimateDirective],
+  imports: [ScrollAnimateDirective, TranslatePipe],
   template: `
     <section id="galeria" class="gallery section" role="region" aria-labelledby="gallery-title" appScrollAnimate scrollThreshold="0.1" (visible)="animateSection()">
       <div class="container">
         <div class="section-header">
-          <span class="section-label">Galeria de Proyectos</span>
+          <span class="section-label">{{ 'gallery.label' | translate }}</span>
           <h2 id="gallery-title" class="section-title">
-            Nuestros trabajos recientes
+            {{ 'gallery.title' | translate }}
           </h2>
           <p class="section-subtitle">
-            Descubre como hemos transformado espacios en Cartagena y sus alrededores
-            con nuestras instalaciones de cortinas.
+            {{ 'gallery.subtitle' | translate }}
           </p>
         </div>
         
@@ -32,12 +31,11 @@ interface GalleryItem {
             <div class="gallery-item" [class]="'item-' + item.id">
               <img 
                 [src]="item.image" 
-                [alt]="item.title"
+                alt=""
                 loading="lazy"
               />
               <div class="item-overlay">
-                <span class="item-category">{{ item.category }}</span>
-                <h3 class="item-title">{{ item.title }}</h3>
+                <span class="item-category">{{ item.catKey | translate }}</span>
               </div>
             </div>
           }
@@ -94,7 +92,8 @@ interface GalleryItem {
     .gallery-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(2, 280px);
+      grid-auto-rows: 280px;
+      grid-auto-flow: dense;
       gap: 1.25rem;
     }
     
@@ -200,14 +199,22 @@ interface GalleryItem {
 })
 export class GalleryComponent {
 
-  galleryItems: GalleryItem[] = [
-    { id: 1, image: '/images/gallery-1.jpg', title: 'Dormitorio Principal', category: 'Residencial' },
-    { id: 2, image: '/images/gallery-2.jpg', title: 'Oficina Corporativa', category: 'Comercial' },
-    { id: 3, image: '/images/gallery-3.jpg', title: 'Comedor Moderno', category: 'Residencial' },
-    { id: 4, image: '/images/gallery-4.jpg', title: 'Sala de Estar', category: 'Residencial' },
-    { id: 5, image: '/images/gallery-5.jpg', title: 'Cocina Contemporanea', category: 'Residencial' },
-    { id: 6, image: '/images/gallery-6.jpg', title: 'Bano de Lujo', category: 'Residencial' }
+  private categories = [
+    'gallery.blackout',
+    'gallery.sheer',
+    'gallery.roller',
+    'gallery.panel',
+    'gallery.other'
   ];
+
+  galleryItems: GalleryItem[] = Array.from({ length: 27 }, (_, index) => {
+    const id = index + 1;
+    return {
+      id,
+      image: `/images/Cortina-${id}.jpeg`,
+      catKey: this.categories[index % this.categories.length]
+    };
+  });
 
   animateSection(): void {
     const timeline = createTimeline({
