@@ -207,12 +207,42 @@ export class GalleryComponent {
     'gallery.other'
   ];
 
+  private categoriaItem: string[] = [
+  'gallery.panel', // 1
+  'gallery.panel', // 2
+  'gallery.panel',    // 3
+  'gallery.panel',    // 4
+  'gallery.panel',   // 5
+  'gallery.panel',    // 6
+  'gallery.blackout',    // 7
+  'gallery.velo', // 8
+  'gallery.velo',   // 9
+  'gallery.velo',    // 10
+  'gallery.panel',    // 11
+  'gallery.blackout',    // 12
+  'gallery.enblackout', // 13
+  'gallery.velo', // 14
+  'gallery.panel',    // 15
+  'gallery.velo',   // 16
+  'gallery.panel',    // 17
+  'gallery.blackout',    // 18
+  'gallery.velo', // 19
+  'gallery.sheer',    // 20
+  'gallery.roller',   // 21
+  'gallery.panel',    // 22
+  'gallery.blackout',    // 23
+  'gallery.blackout', // 24
+  'gallery.velo',    // 25
+  'gallery.velo',   // 26
+  'gallery.velo'     // 27
+];
+
   galleryItems: GalleryItem[] = Array.from({ length: 27 }, (_, index) => {
     const id = index + 1;
     return {
       id,
       image: `/images/Cortina-${id}.jpeg`,
-      catKey: this.categories[index % this.categories.length]
+      catKey: this.categoriaItem[index]
     };
   });
 
